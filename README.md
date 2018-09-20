@@ -2,7 +2,7 @@
 # Dakota Kiger - Team Leader - 9/20/2018
 # Nathaneil Eaddie - Release Manager - 9/20/2018
 # Aaron Bellenoit - Quality Assurance - 9/20/2018
-
+# Brodey Dickerson - Documentation Manager - 9/20/2018
 
 
 # Client: Thomas Stevenson - Smart Kitchen
