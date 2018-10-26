@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Smart Kitchen Table Remote</string>
+    <string name="edit_contrast">High Contrast Mode</string>
+    <string name="edit_size">Change Text Size</string>
+    <string name="options_menu_text">Options</string>
+    <string name="login_smart_kitchen">Smart Kitchen</string>
+    <string name="user_name">Username</string>
+    <string name="password">Password:</string>
+    <string name="loading_text">Loading...</string>
+</resources>
