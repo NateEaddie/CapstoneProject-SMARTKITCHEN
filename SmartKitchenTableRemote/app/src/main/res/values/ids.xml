@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="backButton" type="id" />
+    <item name="optionsButton" type="id" />
+    <item name="optionsButtonClick" type="id" />
+    <item name="backButtonClick" type="id" />
+</resources>

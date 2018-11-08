@@ -7,4 +7,10 @@
     <string name="user_name">Username</string>
     <string name="password">Password:</string>
     <string name="loading_text">Loading...</string>
+    <string name="back_button">Back</string>
+    <string name="adjust_size">Adjust Text Size</string>
+    <string name="password_enter">Enter</string>
+    <string name="up_button">Up Button</string>
+    <string name="logout_button">Logout</string>
+    <string name="requested_password">1234</string>
 </resources>
