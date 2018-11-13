@@ -1,0 +1,6 @@
+Application crashes after connecting to pi -> turning off bluetooth -> attempting to turn on bluetooth again from app
+Cannot turn on Bluetooth with button without causing the application to crash on occasion
+Unknown behavior Bluetooth Connection button functionality when Raspberry Pi is not within range
+No Up/Down Arrow functionality
+Change Text Size Switch nonfunctional
+Toggle Dark/Light Switch will switch from Dark to Light Mode once on that one screen and then will render that change permanent within that one screen

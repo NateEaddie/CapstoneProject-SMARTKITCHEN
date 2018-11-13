@@ -14,7 +14,7 @@ public class login_screen extends AppCompatActivity {
     private Button submitButton;
 
     public login_screen() {
-        setPassword = getString(R.string.requested_password);
+        setPassword = "1234";
     }
 
     @Override

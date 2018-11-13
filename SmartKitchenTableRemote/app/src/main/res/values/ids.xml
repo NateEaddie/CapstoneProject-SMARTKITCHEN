@@ -4,4 +4,6 @@
     <item name="optionsButton" type="id" />
     <item name="optionsButtonClick" type="id" />
     <item name="backButtonClick" type="id" />
+    <item name="tvDeviceName" type="id" />
+    <item name="tvDeviceAddress" type="id" />
 </resources>
