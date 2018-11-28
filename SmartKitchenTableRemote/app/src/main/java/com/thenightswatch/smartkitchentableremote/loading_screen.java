@@ -1,9 +1,9 @@
 package com.thenightswatch.smartkitchentableremote;
 
-import android.content.Intent;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+        import android.content.Intent;
+        import android.os.Handler;
+        import android.support.v7.app.AppCompatActivity;
+        import android.os.Bundle;
 
 public class loading_screen extends AppCompatActivity {
 
@@ -22,6 +22,6 @@ public class loading_screen extends AppCompatActivity {
                 Intent intent = new Intent(loading_screen.this, remote_control.class);
                 startActivity(intent);
             }
-        }, 700);
+        }, 300);
     }
 }

@@ -3,20 +3,18 @@ package com.thenightswatch.smartkitchentableremote;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Set;
 import java.util.UUID;
 
 // 10.235.56.164
@@ -25,6 +23,9 @@ public class remote_control extends AppCompatActivity {
 
     private static final UUID myUUID = UUID.fromString("a1bb5f8d-406d-4119-9cc8-f6c8395514ae");
     int ENABLE_BT_REQUEST_CODE = 1;
+    private OutputStream outputStream;
+    private InputStream inputStream;
+    boolean connected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,46 @@ public class remote_control extends AppCompatActivity {
                 connectToPi(myUUID);
             }
         });
+
+        ImageButton upButton = findViewById(R.id.upButton);
+        upButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "UP",
+                        Toast.LENGTH_SHORT).show();
+                if (connected) {
+                    try {
+                        write(0b00000001);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please connect your device to Bluetooth using the 'Connect to Bluetooth' button",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        ImageButton downButton = findViewById(R.id.downButton);
+        downButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "DOWN",
+                        Toast.LENGTH_SHORT).show();
+                if (connected) {
+                    try {
+                        write(0b00000000);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please connect your device to Bluetooth using the 'Connect to Bluetooth' button",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     /**
@@ -66,6 +107,31 @@ public class remote_control extends AppCompatActivity {
     public void openOptionsMenu() {
         Intent intent = new Intent(remote_control.this, OptionsMenu.class);
         startActivity(intent);
+    }
+
+    /**
+     * Called to send data to Pi over Bluetooth
+     */
+    public void write(int i) throws IOException{
+        outputStream.write(i);
+    }
+
+    /**
+     * I believe it reads data from Bluetooth
+     */
+    public void run(){
+        final int BUFFER_SIZE = 1024;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int bytes = 0;
+        int b = BUFFER_SIZE;
+
+        while (true){
+            try{
+                bytes = inputStream.read(buffer, bytes, BUFFER_SIZE - bytes);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -85,7 +151,7 @@ public class remote_control extends AppCompatActivity {
         else {
             if (!bluetoothAdapter.isEnabled()) {
                 Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                int resultCode = 0;
+//                int resultCode = 0;
                 startActivityForResult(enableIntent, ENABLE_BT_REQUEST_CODE);
                 Toast.makeText(getApplicationContext(), "Enabling Bluetooth!", Toast.LENGTH_LONG).show();
             }
@@ -111,46 +177,15 @@ public class remote_control extends AppCompatActivity {
             }
             socket = tmp;
             try{
+                assert socket != null;
                 socket.connect();
+                outputStream = socket.getOutputStream();
+                inputStream = socket.getInputStream();
+                connected = true;
             }
             catch(IOException ie){
                 ie.printStackTrace();
             }
-
-
-//            if (bluetoothAdapter.startDiscovery()){
-//                Toast.makeText(getApplicationContext(), "Discovering other Bluetooth devices...",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//            else {
-//                Toast.makeText(getApplicationContext(), "Something went wrong! Discovery has failed to start.",
-//                        Toast.LENGTH_SHORT).show();
-//
-//            final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-//                @Override
-//                public void onReceive(Context context, Intent intent) {
-//                    String action = intent.getAction();
-//                    // When discovery finds a device
-//                    if (BluetoothDevice.ACTION_FOUND.equals(action)){
-//                        // Get the BluetoothDevice object from the Intent
-//                        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//
-//                        // Client has found Raspberry Pi Server
-//                        if (device.getAddress().equals("B8:27:EB:5A:DA:B6")){
-//                            try{
-//                                BluetoothSocket socket = device.createRfcommSocketToServiceRecord(myUUID);
-//                            }
-//                            catch(IOException ie){
-//                                ie.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }
-//            };
-//
-//            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-//            registerReceiver(broadcastReceiver, filter);
-//        }
     }
 }
 
@@ -178,86 +213,3 @@ public class remote_control extends AppCompatActivity {
         }
     }
 }
-
-//        Button bluetoothButton = findViewById(R.id.bluetooth_button);
-//        final int ENABLE_BT_REQUEST_CODE = 1;
-//        bluetoothButton.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view){
-//                final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//                if (bluetoothAdapter == null){
-//                    // Display a toast notifying the user that their device doesn't support Bluetooth //
-//                    Toast.makeText(getApplicationContext(), "This device doesn't support Bluetooth.", Toast.LENGTH_SHORT).show();
-//                }
-//                else{
-//                    // If BluetoothAdapter doesn't return null, then the device does support Bluetooth //
-//                    if(!bluetoothAdapter.isEnabled()){
-//                        // Create an intent with the ACTION_REQUEST_ENABLE action, which we'll use to display our system Activity //
-//                        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                        int resultCode = 0;
-//
-//                        // Pass this intent to startActivityForResult(). ENABLE_BT_REQUEST_CODE is a locally defined integer that
-//                        // must be > 0, for example, private static final int ENABLE_BT_REQUEST_CODE = 1 //
-//                        startActivityForResult(enableIntent, ENABLE_BT_REQUEST_CODE);
-//                        Toast.makeText(getApplicationContext(), "Enabling Bluetooth!", Toast.LENGTH_LONG).show();
-////                        onActivityResult(ENABLE_BT_REQUEST_CODE, resultCode, enableIntent);
-//
-//
-//                        // Issuing a discovery request
-//                        if (bluetoothAdapter.startDiscovery()){
-//                            // If discovery has started, then display the following Toast... //
-//                            Toast.makeText(getApplicationContext(), "Discovering other Bluetooth devices...",
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                        else{
-//                            // If discovery hasn't started, then display this alternative Toast //
-//                            Toast.makeText(getApplicationContext(), "Something went wrong! Discovery has failed to start.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                        // Register for the ACTION_FOUND broadcast //
-//                        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-//
-//                        // Create a BroadcastReceiver
-//                        final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
-//                            public void onReceive(Context context, Intent intent){
-//                                String action = intent.getAction();
-//
-//                                // Whenever a remote Bluetooth device is found... //
-//                                if (BluetoothDevice.ACTION_FOUND.equals(action)){
-//
-//                                    // ...retrieve the BluetoothDevice object and its EXTRA_DEVICE field, which contains
-//                                    // information about the device's characteristics and capabilities //
-//                                    BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//
-//                                    // You'll usually want to display information about any devices you discover, so here I'm adding each
-//                                    // device's name and address to an ArrayAdapter, which I'd eventually incorporate into a ListView
-//                                    // bluetoothAdapter.add(device.getName() + "\n" + device.getAddress());
-//
-//                                    if (bluetoothDevice.getName().equals("raspberrypi")){
-//                                        try{
-//                                            BluetoothSocket socket = bluetoothDevice.createRfcommSocketToServiceRecord(myUUID);
-//                                            socket.connect();
-//                                        }
-//                                        catch(IOException ie){
-//                                            ie.printStackTrace();
-//                                        }
-//                                    }
-//
-//                                }
-//                            }
-//                        };
-//
-//
-//                        registerReceiver(broadcastReceiver, filter);
-//                    }
-//                }
-//            }
-//        });
-//
-
-//    @Override
-//    protected void onDestroy(){
-//        super.onDestroy();
-//        this.unregisterReceiver(broadcastReceiver);
-//    }
