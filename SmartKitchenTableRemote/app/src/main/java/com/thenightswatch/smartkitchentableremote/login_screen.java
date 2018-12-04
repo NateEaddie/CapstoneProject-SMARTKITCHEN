@@ -20,6 +20,7 @@ public class login_screen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.onActivityCreateSetTheme(this);
         setContentView(R.layout.activity_login_screen);
 
         submitButton = findViewById(R.id.submitButton);

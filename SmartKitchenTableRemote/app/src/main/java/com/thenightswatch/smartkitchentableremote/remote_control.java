@@ -30,9 +30,8 @@ public class remote_control extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.onActivityCreateSetTheme(this);
         setContentView(R.layout.activity_remote_control);
-
-//        connectToPi(myUUID);
 
         Button optionsButton = findViewById(R.id.button);
         optionsButton.setOnClickListener(new View.OnClickListener() {
@@ -64,11 +63,14 @@ public class remote_control extends AppCompatActivity {
         upButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "UP",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "UP",
+//                        Toast.LENGTH_SHORT).show();
                 if (connected) {
                     try {
-                        write(0b00000001);
+                        Toast.makeText(getApplicationContext(), "SENDING 1...",
+                                Toast.LENGTH_SHORT).show();
+//                        outputStream.write(1);
+                        write("1");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -84,17 +86,18 @@ public class remote_control extends AppCompatActivity {
         downButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "DOWN",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "DOWN",
+//                        Toast.LENGTH_SHORT).show();
                 if (connected) {
                     try {
-                        write(0b00000000);
+//                        outputStream.write(0);
+                        write("0");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Please connect your device to Bluetooth using the 'Connect to Bluetooth' button",
+                    Toast.makeText(getApplicationContext(), "Please connect your device to Bluetooth using the 'Connect to Bluetooth' button.",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -111,9 +114,9 @@ public class remote_control extends AppCompatActivity {
 
     /**
      * Called to send data to Pi over Bluetooth
-     */
-    public void write(int i) throws IOException{
-        outputStream.write(i);
+//     */
+    public void write(String i) throws IOException{
+        outputStream.write(i.getBytes());
     }
 
     /**
@@ -146,7 +149,7 @@ public class remote_control extends AppCompatActivity {
 
         final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
-            Toast.makeText(getApplicationContext(), "This device doesn't support Bluetooth.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "This device does not support Bluetooth.", Toast.LENGTH_SHORT).show();
         }
         else {
             if (!bluetoothAdapter.isEnabled()) {
@@ -162,7 +165,7 @@ public class remote_control extends AppCompatActivity {
 
             // Get a BluetoothSocket for a connection with a given device
             try{
-                tmp = device.createRfcommSocketToServiceRecord(myUUID);
+                tmp = device.createRfcommSocketToServiceRecord(uuid);
                 Method m = device.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
                 tmp = (BluetoothSocket) m.invoke(device, 1);
             }
@@ -207,7 +210,7 @@ public class remote_control extends AppCompatActivity {
             if(resultCode == RESULT_CANCELED){
 
                 //...then display this alternative toast.//
-                Toast.makeText(getApplicationContext(), "An error occurred while attempting to enable Bluetooth",
+                Toast.makeText(getApplicationContext(), "An error occurred while attempting to enable Bluetooth.",
                         Toast.LENGTH_SHORT).show();
             }
         }

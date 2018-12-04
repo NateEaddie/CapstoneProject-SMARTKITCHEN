@@ -18,4 +18,6 @@
     <string name="tvDeviceAddress">Logout</string>
     <string name="discoverable_button">Enable/Disable Discovery Mode</string>
     <string name="start_connection">Start Bluetooth Connection</string>
+    <string name="dark_light_mode">Dark/Light Mode</string>
+    <string name="change_text_size">Change Text Size</string>
 </resources>
