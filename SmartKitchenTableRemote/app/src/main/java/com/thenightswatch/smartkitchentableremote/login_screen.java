@@ -7,11 +7,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 public class login_screen extends AppCompatActivity {
 
     private String setPassword;
     private Button submitButton;
+    private EditText pw;
 
     public login_screen() {
         setPassword = "1234";
@@ -28,6 +32,18 @@ public class login_screen extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 submitPassword();
+            }
+        });
+
+        pw = (EditText) findViewById(R.id.passwordField);
+
+        pw.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    submitPassword();
+                }
+                return false;
             }
         });
     }

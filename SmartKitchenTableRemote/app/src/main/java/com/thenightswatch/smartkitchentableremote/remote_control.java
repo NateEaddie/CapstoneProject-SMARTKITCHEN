@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -25,6 +26,7 @@ public class remote_control extends AppCompatActivity {
     int ENABLE_BT_REQUEST_CODE = 1;
     private OutputStream outputStream;
     private InputStream inputStream;
+    private Vibrator vib;
     boolean connected = false;
 
     @Override
@@ -59,12 +61,15 @@ public class remote_control extends AppCompatActivity {
             }
         });
 
+        vib = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
+
         ImageButton upButton = findViewById(R.id.upButton);
         upButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
 //                Toast.makeText(getApplicationContext(), "UP",
 //                        Toast.LENGTH_SHORT).show();
+                vib.vibrate(50);
                 if (connected) {
                     try {
                         Toast.makeText(getApplicationContext(), "SENDING 1...",
@@ -88,6 +93,7 @@ public class remote_control extends AppCompatActivity {
             public void onClick(View view) {
 //                Toast.makeText(getApplicationContext(), "DOWN",
 //                        Toast.LENGTH_SHORT).show();
+                vib.vibrate(50);
                 if (connected) {
                     try {
 //                        outputStream.write(0);
