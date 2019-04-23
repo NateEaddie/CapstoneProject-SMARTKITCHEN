@@ -28,14 +28,6 @@ public class OptionsMenu extends AppCompatActivity {
             }
         });
 
-//        Button textSizeButton = findViewById(R.id.textSizeButton);
-//        textSizeButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                changeTextSize();
-//            }
-//        });
-
         Button backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,8 +41,4 @@ public class OptionsMenu extends AppCompatActivity {
         Intent intent = new Intent(OptionsMenu.this, remote_control.class);
         startActivity(intent);
     }
-
-//    public void changeTextSize() {
-//
-//    }
 }

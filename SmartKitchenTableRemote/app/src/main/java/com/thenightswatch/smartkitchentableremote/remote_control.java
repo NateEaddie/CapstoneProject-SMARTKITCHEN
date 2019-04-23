@@ -67,15 +67,10 @@ public class remote_control extends AppCompatActivity {
         upButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-//                Toast.makeText(getApplicationContext(), "UP",
-//                        Toast.LENGTH_SHORT).show();
-                vib.vibrate(50);
                 if (connected) {
                     try {
-                        Toast.makeText(getApplicationContext(), "SENDING 1...",
-                                Toast.LENGTH_SHORT).show();
-//                        outputStream.write(1);
                         write("1");
+                        vib.vibrate(50);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -91,13 +86,10 @@ public class remote_control extends AppCompatActivity {
         downButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-//                Toast.makeText(getApplicationContext(), "DOWN",
-//                        Toast.LENGTH_SHORT).show();
-                vib.vibrate(50);
                 if (connected) {
                     try {
-//                        outputStream.write(0);
                         write("0");
+                        vib.vibrate(50);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -160,7 +152,6 @@ public class remote_control extends AppCompatActivity {
         else {
             if (!bluetoothAdapter.isEnabled()) {
                 Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                int resultCode = 0;
                 startActivityForResult(enableIntent, ENABLE_BT_REQUEST_CODE);
                 Toast.makeText(getApplicationContext(), "Enabling Bluetooth!", Toast.LENGTH_LONG).show();
             }
@@ -186,14 +177,22 @@ public class remote_control extends AppCompatActivity {
             }
             socket = tmp;
             try{
-                assert socket != null;
-                socket.connect();
-                outputStream = socket.getOutputStream();
-                inputStream = socket.getInputStream();
-                connected = true;
+                if (socket != null) {
+                    socket.connect();
+                    outputStream = socket.getOutputStream();
+                    inputStream = socket.getInputStream();
+                    connected = true;
+                }
             }
             catch(IOException ie){
                 ie.printStackTrace();
+                try {
+                    socket.close();
+                    connected = false;
+                    Toast.makeText(getApplicationContext(), "Bluetooth connection lost. Please attempt to reestablish before continuing.", Toast.LENGTH_LONG).show();
+                } catch (IOException closeException) {
+                    closeException.printStackTrace();
+                }
             }
     }
 }

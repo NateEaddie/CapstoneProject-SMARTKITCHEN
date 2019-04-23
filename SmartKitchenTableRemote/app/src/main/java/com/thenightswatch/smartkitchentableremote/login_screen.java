@@ -18,7 +18,7 @@ public class login_screen extends AppCompatActivity {
     private EditText pw;
 
     public login_screen() {
-        setPassword = "1234";
+        setPassword = "Nightswatch4";
     }
 
     @Override
